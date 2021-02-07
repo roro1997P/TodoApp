@@ -6,6 +6,12 @@ const txtInput = document.querySelector('.new-todo');
 const btnBorrar = document.querySelector('.clear-completed');
 const ulFiltros = document.querySelector('.filters');
 const anchorFiltros = document.querySelectorAll('.filtro');
+const todoCount = document.querySelector('.todo-count strong');
+
+window.onload = () => {  
+    todoCount.innerHTML = todoList.actualizarContador();
+}
+    
 
 
 export const crearTodoHtml = (todo) => {
@@ -28,12 +34,14 @@ export const crearTodoHtml = (todo) => {
 
 };
 
+
 txtInput.addEventListener('keyup', (event) => {
 
     if (event.keyCode === 13 && txtInput.value.length > 0) {
         const nuevoTodo = new Todo(txtInput.value);
         todoList.nuevoTodo(nuevoTodo);
         crearTodoHtml(nuevoTodo);
+        todoCount.innerHTML = todoList.actualizarContador();
 
         txtInput.value = '';
 
@@ -43,7 +51,7 @@ txtInput.addEventListener('keyup', (event) => {
 });
 
 divTodoList.addEventListener('click', (event) => {
-
+  
     const nombreElemento = event.target.localName;
     const todoElemento = event.target.parentElement.parentElement;
     const todoId = todoElemento.getAttribute('data-id');
@@ -51,10 +59,11 @@ divTodoList.addEventListener('click', (event) => {
     if (nombreElemento.includes('input')) {
         todoList.marcarCompletado(todoId);
         todoElemento.classList.toggle('completed')
-    } else if (nombreElemento.includes('button')) {
-
+        todoCount.innerHTML = todoList.actualizarContador();
+    } else if (nombreElemento.includes('button')) { 
         todoList.eliminarTodo(todoId);
         divTodoList.removeChild(todoElemento);
+        todoCount.innerHTML = todoList.actualizarContador();
 
     }
 
@@ -85,6 +94,7 @@ ulFiltros.addEventListener('click', (event) => {
 
     anchorFiltros.forEach( elem => elem.classList.remove('selected') );
     event.target.classList.add('selected');
+
 
     for (const elemento of divTodoList.children) {
         elemento.classList.remove('hidden');
